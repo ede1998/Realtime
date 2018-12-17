@@ -49,19 +49,30 @@ class Barkeeper
 		{
 			try { wait(); } catch (InterruptedException e) {}
 		}
-		state = WHISKEY;
 
-		BarkeeperHaupt.jemandTutWas ("", this.name, "nimmt Whiskeyflasche.");
+		if (state != WHISKEY)
+		{
+			BarkeeperHaupt.jemandTutWas ("", this.name, "nimmt Whiskeyflasche.");
+			state = WHISKEY;
+		}
+
 		BarkeeperHaupt.jemandTutWas ("", this.name, "schenkt " + name + " Whiskey ein.");
 		BarkeeperHaupt.jemandTutWas (offset, name, "bekommt Whiskey.");
 		BarkeeperHaupt.jemandTutWas (offset, name, "hört Prost Whiskey.");
+
 		BarkeeperHaupt.jemandTutWas ("", this.name, "schaut nach Whiskeykunden.");
-		BarkeeperHaupt.jemandTutWas ("", this.name, "stellt Flasche Whiskeyflasche ab.");
+		notifyAll();
+		try { wait(2000); } catch (InterruptedException e) {} 
+
+		if (state != NONE)
+		{
+			BarkeeperHaupt.jemandTutWas ("", this.name, "stellt Flasche Whiskeyflasche ab.");
+			state = NONE;
+			notifyAll();
+		}
+
 		BarkeeperHaupt.jemandTutWas ("", this.name, "spült paar Gläser.");
 		BarkeeperHaupt.jemandTutWas ("", this.name, "atmet tief durch.");
-
-		state = NONE;
-		notify();
 	}
 	synchronized public void wodka (String name, String offset)
 	{
@@ -69,19 +80,30 @@ class Barkeeper
 		{
 			try { wait(); } catch (InterruptedException e) {}
 		}
-		state = WODKA;
 
-		BarkeeperHaupt.jemandTutWas ("", this.name, "nimmt Wodkaflasche.");
+		if (state != WODKA)
+		{
+			BarkeeperHaupt.jemandTutWas ("", this.name, "nimmt Wodkaflasche.");
+			state = WODKA;
+		}
+
 		BarkeeperHaupt.jemandTutWas ("", this.name, "schenkt " + name + " Wodka ein.");
 		BarkeeperHaupt.jemandTutWas(offset, name, "bekommt Wodka.");
 		BarkeeperHaupt.jemandTutWas(offset, name, "hört Prost Wodka.");
+
 		BarkeeperHaupt.jemandTutWas("", this.name, "schaut nach Wodkakunden.");
-		BarkeeperHaupt.jemandTutWas("", this.name, "stellt Flasche Wodkaflasche ab.");
+		notifyAll();
+		try { wait(2000); } catch (InterruptedException e) {} 
+
+		if (state != NONE)
+		{
+			BarkeeperHaupt.jemandTutWas("", this.name, "stellt Flasche Wodkaflasche ab.");
+			state = NONE;
+			notifyAll();
+		}
+
 		BarkeeperHaupt.jemandTutWas("", this.name, "spült paar Gläser.");
 		BarkeeperHaupt.jemandTutWas("", this.name, "atmet tief durch.");
-
-		state = NONE;
-		notify();
 	}
 }
 // end Barkeeper
