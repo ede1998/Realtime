@@ -32,13 +32,25 @@ public class BarkeeperHaupt
 } // end BarkeeperHaupt
 class Barkeeper
 {
+	final static int NONE = 0;
+	final static int WODKA = 2;
+	final static int WHISKEY = 1;
+
+	private int state;
 	private String name;
 	public Barkeeper (String name)
 	{
 		this.name = name;
+		state = NONE;
 	}
-	public void whiskey (String name, String offset)
+	synchronized public void whiskey (String name, String offset)
 	{
+		while (state == WODKA)
+		{
+			try { wait(); } catch (InterruptedException e) {}
+		}
+		state = WHISKEY;
+
 		BarkeeperHaupt.jemandTutWas ("", this.name, "nimmt Whiskeyflasche.");
 		BarkeeperHaupt.jemandTutWas ("", this.name, "schenkt " + name + " Whiskey ein.");
 		BarkeeperHaupt.jemandTutWas (offset, name, "bekommt Whiskey.");
@@ -47,9 +59,18 @@ class Barkeeper
 		BarkeeperHaupt.jemandTutWas ("", this.name, "stellt Flasche Whiskeyflasche ab.");
 		BarkeeperHaupt.jemandTutWas ("", this.name, "spült paar Gläser.");
 		BarkeeperHaupt.jemandTutWas ("", this.name, "atmet tief durch.");
+
+		state = NONE;
+		notify();
 	}
-	public void wodka (String name, String offset)
+	synchronized public void wodka (String name, String offset)
 	{
+		while (state == WHISKEY)
+		{
+			try { wait(); } catch (InterruptedException e) {}
+		}
+		state = WODKA;
+
 		BarkeeperHaupt.jemandTutWas ("", this.name, "nimmt Wodkaflasche.");
 		BarkeeperHaupt.jemandTutWas ("", this.name, "schenkt " + name + " Wodka ein.");
 		BarkeeperHaupt.jemandTutWas(offset, name, "bekommt Wodka.");
@@ -58,6 +79,9 @@ class Barkeeper
 		BarkeeperHaupt.jemandTutWas("", this.name, "stellt Flasche Wodkaflasche ab.");
 		BarkeeperHaupt.jemandTutWas("", this.name, "spült paar Gläser.");
 		BarkeeperHaupt.jemandTutWas("", this.name, "atmet tief durch.");
+
+		state = NONE;
+		notify();
 	}
 }
 // end Barkeeper
